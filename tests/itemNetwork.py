@@ -17,14 +17,14 @@ class MyTestCase(unittest.TestCase):
                          "Equality check for xor_hash over strings")
 
     def test_Container_creation(self):
-        container_simple = _container.Container()
+        container_simple = _container.LinkedNetwork()
         for a, b in ab_:
             container_simple.add_link(a, b)
-        container_multiple = _container.Container()
+        container_multiple = _container.LinkedNetwork()
         container_multiple.add_multiple_links(ab_)
         self.assertEqual(container_simple.list_links(),
                          container_multiple.list_links(),
-                         "check both Container.add_link and Container.add_multiple_links return the same values")
+                         "check both LinkedNetwork.add_link and LinkedNetwork.add_multiple_links return the same values")
 
 
 if __name__ == '__main__':
