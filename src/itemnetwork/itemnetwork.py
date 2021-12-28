@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import typing
 from collections import Counter
-from typing import Tuple, Dict, List, Hashable
+from typing import Tuple, Dict, List, Hashable, ItemsView
 
 HashType = typing.NewType('hash', int)
 
@@ -11,34 +11,38 @@ def xor_hash(a: Hashable, b: Hashable) -> HashType:
     return HashType(hash(a) ^ hash(b))
 
 
+def ext_hash(a: Hashable, b: Hashable) -> HashType:
+    return HashType(hash((a, b)))
+
+
 class LinkedNetwork:
+    """
+        Usage::\n
+        | ...my_network = LinkedNetwork()
+        | ...my_network.add_link('a', 'b')
+        | ...my_network.add_multiple_links([('a', 'b'), ('b', 'c'), ('c', 'd')])
+        | ...# print items
+        | ...my_network.print_links()
+        | >>> a b 2
+        | >>> b c 1
+        | >>> c d 1
+    """
     _items: Dict[Hashable, list[Link]]
     _links: Dict[HashType, Link]
 
-    def __init__(self, ignore_key_equality_error=False):
+    def __init__(self, keep_order=False, ignore_key_equality_error=False):
         """
-        Usage::
-
-            ...net = LinkedNetwork()
-            ...# create base network
-            ...network = LinkedNetwork()
-            ...# add items to the network
-            ...network.add_link('a', 'b')
-            ...network.add_multiple_links([('a', 'b'),
-            ...                            ('b', 'c'),
-            ...                            ('c', 'd')])
-            ...# print items
-            ...network.print_links()
-            ...a b 2
-            ...b c 1
-            ...c d 1
-
-        :param ignore_key_equality_error: if true all equality errors where a==b will be silently dropped
+        :param ignore_key_equality_error: if true all Links where a==b will be silently dropped before being added
         """
         self._items = dict()
         self._links = dict()
-        if ignore_key_equality_error:
+        if not ignore_key_equality_error:
             self.key_equality_check = lambda a, b: False
+
+        if keep_order:
+            self._hash_method = ext_hash
+        else:
+            self._hash_method = xor_hash
 
     def add_link(self, a: Hashable, b: Hashable, count=1):
         """
@@ -83,6 +87,9 @@ class LinkedNetwork:
 
     def __iter__(self):
         return self._links.values().__iter__()
+
+    def link_items(self) -> ItemsView[Hashable, Link]:
+        return self._links.items()
 
     def list_links(self) -> List[Link]:
         """ :return: all links as a list"""
@@ -130,7 +137,7 @@ class Link:
         self.count = count
 
         if self._hash == 0:
-            raise KeyError('Hashes for a and b must not match', a, b)
+            raise ValueError('Hashes for a and b must not match', a, b)
 
     def __call__(self, count: int = 1):
         """ Increment counter \n
@@ -178,3 +185,12 @@ class Link:
         return self.count + other
 
     __radd__ = __add__
+
+    def a(self) -> Hashable:
+        return self._a
+
+    def b(self) -> Hashable:
+        return self._b
+
+    def hash(self) -> HashType:
+        return self._hash
