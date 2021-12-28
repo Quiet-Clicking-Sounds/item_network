@@ -81,4 +81,4 @@ quick_plot(my_network,fig, axis)
 plt.show()
 ```
 
-![quickplot output image](D:\1 Git\item_network\test_network.png)
+![quickplot output image](\test_network.png)
