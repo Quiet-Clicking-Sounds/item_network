@@ -10,7 +10,6 @@ which can be used to quickly create a
 
 ```python 
 from itemnetwork import LinkedNetwork
-
 my_network = LinkedNetwork(
     ignore_key_equality_error=False,
     keep_order=False)
@@ -81,3 +80,5 @@ fig, axis = plt.subplots()
 quick_plot(my_network,fig, axis)
 plt.show()
 ```
+
+![quickplot output image](D:\1 Git\item_network\test_network.png)
