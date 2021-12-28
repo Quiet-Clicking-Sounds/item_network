@@ -131,6 +131,15 @@ def quick_plot(network: LinkedNetwork, fig: plt.Figure, ax: plt.Axes, bbox_style
     :param network: filled LinkedNetwork to use as a base
     :return:
     """
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_yticklabels([])
+    ax.set_xticklabels([])
+    ax.set_aspect('equal')
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False)
     if bbox_style is None:
         bbox_style = dict(boxstyle='circle', pad=0.3, fc='cyan', ec='b')
     color_map = _make_colour_map(network)
